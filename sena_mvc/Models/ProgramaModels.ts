@@ -19,6 +19,7 @@ export class Programa {
 
     }
 
+    //GET de programa
     public async GETProgramas(): Promise<ProgramaData[]> {
 
         const { rows: programs } = await conexion.execute("SELECT * FROM programa");
@@ -182,7 +183,6 @@ export class Programa {
 
 
     }
-
 
 }
 
