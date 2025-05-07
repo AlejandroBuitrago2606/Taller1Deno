@@ -74,6 +74,116 @@ export class Programa {
 
     }
 
+    //PUT de programa
+    public async PUTPrograma(): Promise<{ success: boolean; message: string; programa?: Record<string, unknown> }> {
+
+        try {
+
+            //Validar que el obj de usuario no sea null y los campos requeridos esten definidos.
+            if (!this._objPrograma) {
+
+                throw new Error("No se ha proporcionado un objeto de programa válido.");
+            }
+
+            const { nombre_programa } = this._objPrograma;
+            if (!nombre_programa) {
+
+                throw new Error("Faltan campos requeridos para insertar el programa.");
+            }
+
+
+            if (!this._idPrograma) {
+                
+                throw new Error("No se envio ningun idPrograma");
+            }
+
+            await conexion.execute("START TRANSACTION");
+            const result = await conexion.execute(`UPDATE programa SET nombre_programa=? WHERE idprograma=?`, [
+                this._objPrograma.nombre_programa,
+                this._idPrograma
+            ]);
+
+            console.log("Se ejecuto la consulta");
+            
+
+            if (result && typeof result.affectedRows === "number" && result.affectedRows > 0) {
+
+                console.log("La actualizacion fue exitosa");
+
+                const [programa] = await conexion.query(`SELECT * FROM programa WHERE idprograma = ?`, [this._idPrograma]);
+                await conexion.execute("COMMIT");
+                console.log("Obteniendo el programa actualizado" + programa);
+
+                return { success: true, message: "Programa Actualizado Correctamente.", programa: programa };
+
+            }
+            else {
+                throw new Error("No fue posible actualizar el programa.");
+            }
+
+
+        } catch (error) {
+
+            if (error instanceof z.ZodError) {
+                return {success: false, message: error.message}
+            }
+            else{
+                return {success: false, message: `Error interno del servidor: ${error}`};
+            }
+
+
+        }
+
+
+
+
+    }
+
+    //DELETE de programa
+    public async DELETEPrograma(): Promise<{ success: boolean; message: string;}> {
+
+        try {
+
+            
+            if (!this._idPrograma) {
+                
+                throw new Error("No se envio ningun idPrograma");
+            }
+
+            const idPrograma = this._idPrograma;
+
+            await conexion.execute("START TRANSACTION");
+            const result = await conexion.execute(`DELETE FROM programa WHERE idprograma=?`, [idPrograma]);
+
+            if (result && typeof result.affectedRows === "number" && result.affectedRows > 0) {
+
+                console.log("La eliminacion fue exitosa");
+
+                return { success: true, message: `Programa Eliminado Correctamente. IdPrograma= ${idPrograma}` };
+
+            }
+            else {
+                throw new Error("No fue posible eliminar el programa.");
+            }
+
+
+        } catch (error) {
+
+            if (error instanceof z.ZodError) {
+                return {success: false, message: error.message}
+            }
+            else{
+                return {success: false, message: `Error interno del servidor: ${error}`};
+            }
+
+
+        }
+
+
+
+    }
+
+
 }
 
 
