@@ -97,11 +97,12 @@ export class Programa {
                 
                 throw new Error("No se envio ningun idPrograma");
             }
+            const idPrograma = this._idPrograma;
 
             await conexion.execute("START TRANSACTION");
             const result = await conexion.execute(`UPDATE programa SET nombre_programa=? WHERE idprograma=?`, [
                 this._objPrograma.nombre_programa,
-                this._idPrograma
+                idPrograma
             ]);
 
             console.log("Se ejecuto la consulta");
@@ -111,7 +112,7 @@ export class Programa {
 
                 console.log("La actualizacion fue exitosa");
 
-                const [programa] = await conexion.query(`SELECT * FROM programa WHERE idprograma = ?`, [this._idPrograma]);
+                const [programa] = await conexion.query(`SELECT * FROM programa WHERE idprograma = ?`, [idPrograma]);
                 await conexion.execute("COMMIT");
                 console.log("Obteniendo el programa actualizado" + programa);
 
@@ -181,6 +182,39 @@ export class Programa {
         }
 
 
+
+    }
+
+    //GET de un programa por id
+    public async GETProgramaById(): Promise<ProgramaData | null> {
+
+        try {
+
+            if (!this._idPrograma) {
+                
+                throw new Error("No se envio ningun idPrograma");
+            }
+
+            const idPrograma = this._idPrograma;
+            const [programa] = await conexion.query(`SELECT * FROM programa WHERE idprograma = ?`, [idPrograma]);
+
+            if (programa.length > 0) {
+                return programa[0] as ProgramaData;
+            } else {
+                return null;
+            }
+
+        } catch (error) {
+
+            if (error instanceof z.ZodError) {
+                return null;
+            }
+            else{
+                return null;
+            }
+
+
+        }
 
     }
 
