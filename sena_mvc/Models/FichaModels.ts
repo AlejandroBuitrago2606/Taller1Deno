@@ -9,15 +9,17 @@ interface FichaData {
     fecha_fin_lectiva: string;
     fecha_fin_practica: string;
     programa_idprograma: number;
-  }
+}
 
 export class Ficha {
     public _objFicha: FichaData | null;
     public _idFicha: number | null;
+    public _idPrograma: number | null;
 
-    constructor(objFicha: FichaData | null = null, idFicha: number | null = null) {
+    constructor(objFicha: FichaData | null = null, idFicha: number | null = null, idPrograma: number | null = null) {
         this._objFicha = objFicha;
         this._idFicha = idFicha;
+        this._idPrograma = idPrograma;
     }
 
     //GET de ficha
@@ -143,7 +145,7 @@ export class Ficha {
 
         try {
 
-            
+
             if (!this._idFicha) {
 
                 throw new Error("No se envio ningun idFicha");
@@ -182,36 +184,48 @@ export class Ficha {
 
     //GET de ficha por id
     public async GETFichaID(): Promise<FichaData | null> {
-    
-            try {
-    
-                if (!this._idFicha) {
-    
-                    throw new Error("No se envio ningun idFicha");
-                }
-    
-                const idFicha = this._idFicha;
-                const [ficha] = await conexion.query(`SELECT * FROM ficha WHERE idficha = ?`, [idFicha]);
-    
-                if (ficha.length > 0) {
-                    return ficha[0] as FichaData;
-                } else {
-                    return null;
-                }
-    
-            } catch (error) {
-    
-                if (error instanceof z.ZodError) {
-                    return null;
-                }
-                else {
-                    return null;
-                }
-    
-    
+
+        try {
+
+            if (!this._idFicha) {
+
+                throw new Error("No se envio ningun idFicha");
             }
-    
+
+            const idFicha = this._idFicha;
+            const [ficha] = await conexion.query(`SELECT * FROM ficha WHERE idficha = ?`, [idFicha]);
+
+            if (ficha.length > 0) {
+                return ficha[0] as FichaData;
+            } else {
+                return null;
+            }
+
+        } catch (error) {
+
+            if (error instanceof z.ZodError) {
+                return null;
+            }
+            else {
+                return null;
+            }
+
+
         }
-        
+
+    }
+
+    //GET de ficha por idPrograma
+    public async GETFichasIdPrograma(): Promise<FichaData[] | null> {
+
+        if (!this._idPrograma) {
+
+            throw new Error("No se envio ningun idPrograma");
+        }
+        const idPrograma = this._idPrograma;
+
+        const { rows: fichas } = await conexion.execute("SELECT * FROM ficha WHERE programa_idprograma = ?", [idPrograma]);
+        return fichas as FichaData[];
+    }
 
 }
