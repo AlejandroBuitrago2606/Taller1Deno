@@ -84,7 +84,7 @@ export const postAprendiz = async (ctx: any) => {
 
 }
 
-export const putAprendiz = async (ctx: any) => {
+export const actualizarAprendiz = async (ctx: any) => {
 
     const { response, request } = ctx;
 
