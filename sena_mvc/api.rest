@@ -1,0 +1,52 @@
+GET http://localhost:8000/instructores
+
+###
+POST http://localhost:8000/instructores
+Content-Type: application/json
+
+{
+    
+}
+
+###
+PUT http://localhost:8000/instructores
+Content-Type: application/json
+
+{
+    
+}
+
+###
+DELETE http://localhost:8000/instructores
+Content-Type: application/json
+
+{
+   
+}
+
+###
+GET http://localhost:8000/profesiones
+
+###
+POST http://localhost:8000/profesiones
+Content-Type: application/json
+
+{
+    
+}
+
+###
+PUT http://localhost:8000/profesiones
+Content-Type: application/json
+
+{
+    
+}
+
+###
+DELETE http://localhost:8000/profesiones
+Content-Type: application/json
+
+{
+   
+}
