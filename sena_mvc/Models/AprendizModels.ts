@@ -177,7 +177,7 @@ export class Aprendiz {
     }
 
     //GET de un aprendiz por id
-    public async GETProgramaById(): Promise<AprendizData | null> {
+    public async GETAprendizID(): Promise<AprendizData | null> {
 
         try {
 

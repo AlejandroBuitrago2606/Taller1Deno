@@ -186,7 +186,7 @@ export class Programa {
     }
 
     //GET de un programa por id
-    public async GETProgramaById(): Promise<ProgramaData | null> {
+    public async GETProgramaID(): Promise<ProgramaData | null> {
 
         try {
 
