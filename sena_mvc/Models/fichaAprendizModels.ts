@@ -82,11 +82,10 @@ export class FichaAprendiz {
             await conexion.execute("START TRANSACTION");
 
 
-            const result = await conexion.execute(`UPDATE ficha_has_aprendiz SET ficha_idficha = ?, aprendiz_idaprendiz = ?, instructor_idinstructor = ? WHERE ficha_idficha = ?`, [
-                ficha_idficha,
-                aprendiz_idaprendiz,
+            const result = await conexion.execute(`UPDATE ficha_has_aprendiz SET instructor_idinstructor = ? WHERE ficha_idficha=? AND aprendiz_idaprendiz=?`, [
                 instructor_idinstructor,
-                ficha_idficha
+                ficha_idficha,
+                aprendiz_idaprendiz
             ]);
 
             console.log("Se ejecuto la consulta");
@@ -96,7 +95,7 @@ export class FichaAprendiz {
 
                 console.log("La actualizacion fue exitosa");
 
-                const [fichaAprendiz] = await conexion.query(`SELECT * FROM ficha_has_aprendiz WHERE ficha_idficha = ? AND aprendiz_idaprendiz = ? AND instructor_idinstructor = ?`, [ficha_idficha, aprendiz_idaprendiz, instructor_idinstructor]);
+                const [fichaAprendiz] = await conexion.query(`SELECT * FROM ficha_has_aprendiz WHERE ficha_idficha=? AND aprendiz_idaprendiz=? AND instructor_idinstructor=?`, [ficha_idficha, aprendiz_idaprendiz, instructor_idinstructor]);
                 await conexion.execute("COMMIT");
                 console.log("Obteniendo la fichaAprendiz actualizada" + fichaAprendiz);
 
@@ -135,10 +134,10 @@ export class FichaAprendiz {
 
                 throw new Error("No se envio ningun FichaAprendiz");
             }
-            const { ficha_idficha, aprendiz_idaprendiz, instructor_idinstructor } = this._objFichaAprendiz;
+            const { ficha_idficha, aprendiz_idaprendiz } = this._objFichaAprendiz;
 
             await conexion.execute("START TRANSACTION");
-            const result = await conexion.execute(`DELETE FROM ficha_has_aprendiz WHERE ficha_idficha = ? AND aprendiz_idaprendiz = ? AND instructor_idinstructor = ?`, [ficha_idficha, aprendiz_idaprendiz, instructor_idinstructor]);
+            const result = await conexion.execute(`DELETE FROM ficha_has_aprendiz WHERE ficha_idficha = ? AND aprendiz_idaprendiz = ?`, [ficha_idficha, aprendiz_idaprendiz]);
 
             if (result && typeof result.affectedRows === "number" && result.affectedRows > 0) {
 
@@ -173,19 +172,22 @@ export class FichaAprendiz {
                 throw new Error("No se ha proporcionado un objeto fichaAprendiz válido.");
             }
 
-            const { ficha_idficha, aprendiz_idaprendiz, instructor_idinstructor } = this._objFichaAprendiz;
-            if (!ficha_idficha || !aprendiz_idaprendiz || !instructor_idinstructor) {
+            const { ficha_idficha, aprendiz_idaprendiz } = this._objFichaAprendiz;
+            if (!ficha_idficha || !aprendiz_idaprendiz) {
                 throw new Error("Faltan campos requeridos para obtener la fichaAprendiz.");
             }
 
-            const [fichaAprendiz] = await conexion.query(`SELECT * FROM ficha_has_aprendiz WHERE ficha_idficha = ? AND aprendiz_idaprendiz = ? AND instructor_idinstructor = ?`, [ficha_idficha, aprendiz_idaprendiz, instructor_idinstructor]);
+            const { rows: fichaAprendiz } = await conexion.execute(`SELECT * FROM ficha_has_aprendiz WHERE ficha_idficha = ? AND aprendiz_idaprendiz`, [ficha_idficha, aprendiz_idaprendiz]);
 
             //Verificar si no esta vacio el resultado si no retornar null.
-            if (fichaAprendiz.length === 0) {
-                console.log("No se encontraron resultados para la consulta.");
-                return null;
+            if (fichaAprendiz && fichaAprendiz.length > 0) {
+
+                return fichaAprendiz as FichaAprendizData[];
             }
-            return fichaAprendiz as FichaAprendizData[];
+            console.log("No se encontraron resultados para la consulta.");
+            return null;
+
+
 
         } catch (error) {
             if (error instanceof z.ZodError) {

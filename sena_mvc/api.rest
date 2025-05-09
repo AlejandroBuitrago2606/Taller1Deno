@@ -305,9 +305,9 @@ POST http://localhost:8000/fichaAprendiz
 Content-Type: application/json
 
 {
-    "ficha_idficha": 2,
+    "ficha_idficha": 10,
     "aprendiz_idaprendiz": 4,
-    "instructor_idinstructor": 1
+    "instructor_idinstructor": 3
 }
 
 ###
@@ -315,9 +315,9 @@ PUT http://localhost:8000/fichaAprendiz
 Content-Type: application/json
 
 {
-    "ficha_idficha": 2,
-    "aprendiz_idaprendiz": 5,
-    "instructor_idinstructor": 1
+    "ficha_idficha": 11,
+    "aprendiz_idaprendiz": 4,
+    "instructor_idinstructor": 3
 }
 
 ###
@@ -325,9 +325,8 @@ DELETE http://localhost:8000/fichaAprendiz
 Content-Type: application/json
 
 {
-    "ficha_idficha": 5,
-    "aprendiz_idaprendiz": 4,
-    "instructor_idinstructor": 3
+    "ficha_idficha": 10,
+    "aprendiz_idaprendiz": 4    
 }
 
 ###
@@ -335,7 +334,6 @@ POST http://localhost:8000/fichaAprendiz/id
 Content-Type: application/json
 
 {
-    "ficha_idficha": 1,
-    "aprendiz_idaprendiz": 1,
-    "instructor_idinstructor": 1
+    "ficha_idficha": 9,
+    "aprendiz_idaprendiz": 5
 }

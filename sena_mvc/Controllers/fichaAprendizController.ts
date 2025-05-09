@@ -1,4 +1,5 @@
 // deno-lint-ignore-file
+import { string, unknown } from "https://deno.land/x/zod@v3.24.1/types.ts";
 import { FichaAprendiz } from "../Models/fichaAprendizModels.ts";
 
 
@@ -151,7 +152,7 @@ export const deleteFichaAprendiz = async (ctx: any) => {
 
             ficha_idficha: body.ficha_idficha,
             aprendiz_idaprendiz: body.aprendiz_idaprendiz,
-            instructor_idinstructor: body.instructor_idinstructor
+            instructor_idinstructor: 0
         };
 
 
@@ -198,9 +199,9 @@ export const postFichaAprendizID = async (ctx: any) => {
 
         const FichaAprendizData = {
 
-            ficha_idficha: body.ficha_idficha,
-            aprendiz_idaprendiz: body.aprendiz_idaprendiz,
-            instructor_idinstructor: body.instructor_idinstructor
+            ficha_idficha: Number(body.ficha_idficha),
+            aprendiz_idaprendiz: Number(body.aprendiz_idaprendiz),
+            instructor_idinstructor: 0
         };
 
 
@@ -212,8 +213,7 @@ export const postFichaAprendizID = async (ctx: any) => {
 
             success: result == null ? false : true,
             body: result == null ? "No se encontro ninguna fichaAprendiz" : result
-
-        }
+        };
 
 
     } catch (error) {
@@ -223,7 +223,7 @@ export const postFichaAprendizID = async (ctx: any) => {
             success: false,
             msg: `Error al procesar la solicitud. \n ${error}`
 
-        }
+        };
         console.log(error);
 
 
