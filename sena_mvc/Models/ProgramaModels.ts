@@ -69,7 +69,7 @@ export class Programa {
 
             }
             else{
-                return {success: false, message: "Error interno del servidor"};
+                return {success: false, message: `Error interno del servidor: ${error}`};
             }
         }
 
@@ -101,7 +101,7 @@ export class Programa {
 
             await conexion.execute("START TRANSACTION");
             const result = await conexion.execute(`UPDATE programa SET nombre_programa=? WHERE idprograma=?`, [
-                this._objPrograma.nombre_programa,
+                nombre_programa,
                 idPrograma
             ]);
 
@@ -186,7 +186,7 @@ export class Programa {
     }
 
     //GET de un programa por id
-    public async GETProgramaID(): Promise<ProgramaData | null> {
+    public async POSTProgramaID(): Promise<ProgramaData | null> {
 
         try {
 
@@ -196,9 +196,9 @@ export class Programa {
             }
 
             const idPrograma = this._idPrograma;
-            const [programa] = await conexion.query(`SELECT * FROM programa WHERE idprograma = ?`, [idPrograma]);
+            const { rows: programa} = await conexion.execute(`SELECT * FROM programa WHERE idprograma = ?`, [idPrograma]);
 
-            if (programa.length > 0) {
+            if (programa) {
                 return programa[0] as ProgramaData;
             } else {
                 return null;

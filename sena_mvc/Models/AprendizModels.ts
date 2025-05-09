@@ -76,9 +76,9 @@ export class Aprendiz {
                 throw new Error("No se ha proporcionado un objeto de aprendiz válido.");
             }
 
-            const { nombre, apellido, email } = this._objAprendiz;
+            const { nombre, apellido, email, telefono } = this._objAprendiz;
 
-            if (!nombre || !apellido || !email) {
+            if (!nombre || !apellido || !email || !telefono) {
 
                 throw new Error("Faltan campos requeridos para actualizar el aprendiz.");
             }
@@ -91,11 +91,12 @@ export class Aprendiz {
             const idAprendiz = this._idAprendiz;
 
             await conexion.execute("START TRANSACTION");
-            const result = await conexion.execute(`UPDATE aprendiz SET nombre=?,apellido=?,email=? WHERE idaprendiz=?`, [
+            const result = await conexion.execute(`UPDATE aprendiz SET nombre=?,apellido=?,email=?, telefono=? WHERE idaprendiz=?`, [
 
                 nombre,
                 apellido,
                 email,
+                telefono,
                 idAprendiz
             ]);
 
@@ -114,7 +115,7 @@ export class Aprendiz {
 
             }
             else {
-                throw new Error("No fue posible actualizar el aprendiz.");
+                throw new Error(`No fue posible actualizar el aprendiz. Error: ${result}`);
             }
 
 
@@ -177,19 +178,18 @@ export class Aprendiz {
     }
 
     //GET de un aprendiz por id
-    public async GETAprendizID(): Promise<AprendizData | null> {
+    public async POSTAprendizID(): Promise<AprendizData | null> {
 
         try {
 
-            if (!this._idAprendiz) {
-
-                throw new Error("No se envio ningun idAprendiz");
+            if (typeof this._idAprendiz !== "number" || Number.isNaN(this._idAprendiz)) {
+                throw new Error("idAprendiz inválido");
             }
 
             const idAprendiz = this._idAprendiz;
-            const [aprendiz] = await conexion.query(`SELECT * FROM aprendiz WHERE idaprendiz = ?`, [idAprendiz]);
+            const { rows: aprendiz} = await conexion.execute(`SELECT * FROM aprendiz WHERE idaprendiz=?`, [idAprendiz]);
 
-            if (aprendiz.length > 0) {
+            if (aprendiz) {
                 return aprendiz[0] as AprendizData;
             } else {
                 return null;

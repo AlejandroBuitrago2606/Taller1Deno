@@ -167,7 +167,7 @@ export class FichaAprendiz {
 
     }
 
-    public async GETFichaAprendizById(): Promise<FichaAprendizData | null> {
+    public async POSTFichaAprendizById(): Promise<FichaAprendizData[] | null> {
         try {
             if (!this._objFichaAprendiz) {
                 throw new Error("No se ha proporcionado un objeto fichaAprendiz válido.");
@@ -180,7 +180,13 @@ export class FichaAprendiz {
 
             const [fichaAprendiz] = await conexion.query(`SELECT * FROM ficha_has_aprendiz WHERE ficha_idficha = ? AND aprendiz_idaprendiz = ? AND instructor_idinstructor = ?`, [ficha_idficha, aprendiz_idaprendiz, instructor_idinstructor]);
 
-            return fichaAprendiz as FichaAprendizData | null;
+            //Verificar si no esta vacio el resultado si no retornar null.
+            if (fichaAprendiz.length === 0) {
+                console.log("No se encontraron resultados para la consulta.");
+                return null;
+            }
+            return fichaAprendiz as FichaAprendizData[];
+
         } catch (error) {
             if (error instanceof z.ZodError) {
                 console.error(`Error: ${error.message}`);

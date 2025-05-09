@@ -47,8 +47,8 @@ export const postPrograma = async (ctx: any) => {
 
         const ProgramaData = {
 
-            idprograma: body.idprograma,
-            nombre_programa: body.nombre
+            idprograma: null,
+            nombre_programa: body.nombre_programa
         };
 
         const objPrograma = new Programa(ProgramaData);
@@ -94,8 +94,8 @@ export const putPrograma = async (ctx: any) => {
 
         const ProgramaData = {
 
-            idprograma: body.idprograma,
-            nombre_programa: body.nombre
+            idprograma: null,
+            nombre_programa: body.nombre_programa
         };
         const idPrograma = Number(body.idprograma);
 
@@ -168,7 +168,7 @@ export const deletePrograma = async (ctx: any) => {
 
 }
 
-export const getProgramaById = async (ctx: any) => {
+export const postProgramaById = async (ctx: any) => {
 
     const { response, request } = ctx;
 
@@ -186,12 +186,12 @@ export const getProgramaById = async (ctx: any) => {
         const idPrograma = Number(body.idprograma);
 
         const objPrograma = new Programa(null, idPrograma);
-        const result = await objPrograma.GETProgramaID();
+        const result = await objPrograma.POSTProgramaID();
         response.status = 200;
         response.body = {
 
-            success: true,
-            body: result
+            success: result == null? false : true,
+            body: result == null? "No se encontro el programa" : result
 
         }
 

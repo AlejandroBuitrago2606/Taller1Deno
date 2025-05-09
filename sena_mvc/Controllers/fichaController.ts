@@ -47,7 +47,7 @@ export const postFicha = async (ctx: any) => {
 
        
         const FichaData = {
-            idficha: body.idficha,
+            idficha: null,
             codigo: body.codigo,
             fecha_inicio_lectiva: body.fecha_inicio_lectiva,
             fecha_fin_lectiva: body.fecha_fin_lectiva,
@@ -179,7 +179,7 @@ export const deleteFicha = async (ctx: any) => {
 
 }
 
-export const getFichaById = async (ctx: any) => {
+export const postFichaById = async (ctx: any) => {
 
     const { response, request } = ctx;
 
@@ -197,12 +197,12 @@ export const getFichaById = async (ctx: any) => {
         const idficha = Number(body.idficha);
 
         const objFicha = new Ficha(null, idficha);
-        const result = await objFicha.GETFichaID();
+        const result = await objFicha.POSTFichaID();
         response.status = 200;
         response.body = {
 
-            success: true,
-            body: result
+            success: result == null ? false : true,
+            body: result == null ? "No se encontro la ficha" : result
 
         };
 
@@ -222,7 +222,7 @@ export const getFichaById = async (ctx: any) => {
 
 }
 
-export const getFichasByPrograma = async (ctx: any) => {
+export const postFichasByPrograma = async (ctx: any) => {
 
     const { response, request } = ctx;
 
@@ -240,12 +240,13 @@ export const getFichasByPrograma = async (ctx: any) => {
         const idprograma = Number(body.idprograma);
 
         const objFicha = new Ficha(null, null, idprograma);
-        const result = await objFicha.GETFichasIdPrograma();
+        const result = await objFicha.POSTFichasIdPrograma();
+
         response.status = 200;
         response.body = {
 
-            success: true,
-            body: result
+            success: result == null ? false : true,
+            body: result == null ? "No se encontraron fichas asociadas a este programa." : result
 
         };
 

@@ -50,7 +50,7 @@ export const postAprendiz = async (ctx: any) => {
 
         const AprendizData = {
 
-            idaprendiz: body.idaprendiz,
+            idaprendiz: null,
             nombre: body.nombre,
             apellido: body.apellido,
             email: body.email,
@@ -179,7 +179,7 @@ export const deleteAprendiz = async (ctx: any) => {
 
 }
 
-export const getAprendizById = async (ctx: any) => {
+export const postAprendizById = async (ctx: any) => {
 
     const { response, request } = ctx;
 
@@ -191,20 +191,25 @@ export const getAprendizById = async (ctx: any) => {
             response.body = { success: false, msg: "El cuerpo de la solicitud esta vacio." };
             return;
         }
+        console.log("Todo va bien 1");
 
         const body = await request.body.json();
 
+        console.log("Todo va bien 2");
         const idAprendiz = Number(body.idaprendiz);
 
+        console.log("Todo va bien: " + idAprendiz);
+        
         const objAprendiz = new Aprendiz(null, idAprendiz);
-        const result = await objAprendiz.GETAprendizID();
+        const result = await objAprendiz.POSTAprendizID();
+        console.log("Todo va bien, el resultado es: " + result);
         response.status = 200;
         response.body = {
 
-            success: true,
-            body: result
+            success: result == null ? false : true,
+            body: result == null ? "No se encontro el aprendiz" : result
 
-        }
+        };
 
 
     } catch (error) {

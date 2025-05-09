@@ -24,6 +24,19 @@ Content-Type: application/json
    
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 ###
 GET http://localhost:8000/profesiones
 
@@ -49,4 +62,256 @@ Content-Type: application/json
 
 {
    
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+###
+GET http://localhost:8000/aprendiz
+
+###
+POST http://localhost:8000/aprendiz
+Content-Type: application/json
+
+{
+    "nombre": "Yuber Alejandro",
+    "apellido": "Buitrago Gonzalez",
+    "email": "yuber.buitrago@gmail.com",
+    "telefono": "3166301513"    
+}
+
+###
+PUT http://localhost:8000/aprendiz
+Content-Type: application/json
+
+{
+      "idaprendiz": 2,
+      "nombre": "Derly Miley",
+      "apellido": "Rincon Gil",
+      "email": "derly.gil@gmail.com",
+      "telefono": "3223677821"
+}
+
+###
+DELETE http://localhost:8000/aprendiz
+Content-Type: application/json
+
+{
+    "idaprendiz": 5
+}
+
+###
+POST http://localhost:8000/aprendiz/id
+Content-Type: application/json
+
+{
+    "idaprendiz": 10
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+###
+GET http://localhost:8000/programa
+
+###
+POST http://localhost:8000/programa
+Content-Type: application/json
+
+{
+    "nombre_programa": "Telecomunicaciones"
+}
+
+###
+PUT http://localhost:8000/programa
+Content-Type: application/json
+
+{
+    "idprograma": 9,
+    "nombre_programa": "Sistemas"
+}
+
+###
+DELETE http://localhost:8000/programa
+Content-Type: application/json
+
+{
+    "idprograma": 3
+}
+
+###
+POST http://localhost:8000/programa/id
+Content-Type: application/json
+
+{
+    "idprograma": 3
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+###
+GET http://localhost:8000/ficha
+
+###
+POST http://localhost:8000/ficha
+Content-Type: application/json
+
+{
+    "codigo": "2644167A",
+    "fecha_inicio_lectiva": "2023-10-02",
+    "fecha_fin_lectiva": "2025-07-02",
+    "fecha_fin_practica": "2025-12-31",
+    "programa_idprograma": 4
+}
+
+###
+PUT http://localhost:8000/ficha
+Content-Type: application/json
+
+{
+      "idficha": 0,
+      "codigo": "2656123",
+      "fecha_inicio_lectiva": "2023-07-20",
+      "fecha_fin_lectiva": "2025-04-12",
+      "fecha_fin_practica": "2025-11-21",
+      "programa_idprograma": 3
+}
+
+###
+DELETE http://localhost:8000/ficha
+Content-Type: application/json
+
+{
+    "idficha": 0
+}
+
+###
+POST http://localhost:8000/ficha/id
+Content-Type: application/json
+
+{
+    "idficha": 12
+}
+
+###
+POST http://localhost:8000/ficha/programa
+Content-Type: application/json
+
+{
+        "idprograma": 90
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+###
+GET http://localhost:8000/fichaAprendiz
+
+###
+POST http://localhost:8000/fichaAprendiz
+Content-Type: application/json
+
+{
+    "ficha_idficha": 2,
+    "aprendiz_idaprendiz": 4,
+    "instructor_idinstructor": 1
+}
+
+###
+PUT http://localhost:8000/fichaAprendiz
+Content-Type: application/json
+
+{
+    "ficha_idficha": 2,
+    "aprendiz_idaprendiz": 5,
+    "instructor_idinstructor": 1
+}
+
+###
+DELETE http://localhost:8000/fichaAprendiz
+Content-Type: application/json
+
+{
+    "ficha_idficha": 5,
+    "aprendiz_idaprendiz": 4,
+    "instructor_idinstructor": 3
+}
+
+###
+POST http://localhost:8000/fichaAprendiz/id
+Content-Type: application/json
+
+{
+    "ficha_idficha": 1,
+    "aprendiz_idaprendiz": 1,
+    "instructor_idinstructor": 1
 }

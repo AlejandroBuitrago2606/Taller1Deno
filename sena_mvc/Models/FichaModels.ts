@@ -183,7 +183,7 @@ export class Ficha {
     }
 
     //GET de ficha por id
-    public async GETFichaID(): Promise<FichaData | null> {
+    public async POSTFichaID(): Promise<FichaData | null> {
 
         try {
 
@@ -193,9 +193,9 @@ export class Ficha {
             }
 
             const idFicha = this._idFicha;
-            const [ficha] = await conexion.query(`SELECT * FROM ficha WHERE idficha = ?`, [idFicha]);
+            const { rows: ficha} = await conexion.execute(`SELECT * FROM ficha WHERE idficha = ?`, [idFicha]);
 
-            if (ficha.length > 0) {
+            if (ficha) {
                 return ficha[0] as FichaData;
             } else {
                 return null;
@@ -216,7 +216,7 @@ export class Ficha {
     }
 
     //GET de ficha por idPrograma
-    public async GETFichasIdPrograma(): Promise<FichaData[] | null> {
+    public async POSTFichasIdPrograma(): Promise<FichaData[] | null> {
 
         if (!this._idPrograma) {
 
@@ -225,7 +225,12 @@ export class Ficha {
         const idPrograma = this._idPrograma;
 
         const { rows: fichas } = await conexion.execute("SELECT * FROM ficha WHERE programa_idprograma = ?", [idPrograma]);
-        return fichas as FichaData[];
+        //Validamos que el resultado no sea null y que contenga al menos un registro.
+        if (fichas && fichas.length > 0) {
+            return fichas as FichaData[];
+        } else {
+            return null;
+        } 
     }
 
 }

@@ -49,9 +49,9 @@ export const postFichaAprendiz = async (ctx: any) => {
         
         const FichaAprendizData = {
 
-            ficha_idficha: body.ficha_idficha,
-            aprendiz_idaprendiz: body.aprendiz_idaprendiz,
-            instructor_idinstructor: body.instructor_idinstructor
+            ficha_idficha: Number(body.ficha_idficha),
+            aprendiz_idaprendiz: Number(body.aprendiz_idaprendiz),
+            instructor_idinstructor: Number(body.instructor_idinstructor)
         };
         
 
@@ -181,7 +181,7 @@ export const deleteFichaAprendiz = async (ctx: any) => {
 
 }
 
-export const getFichaAprendizID = async (ctx: any) => {
+export const postFichaAprendizID = async (ctx: any) => {
 
     const { response, request } = ctx;
 
@@ -205,13 +205,13 @@ export const getFichaAprendizID = async (ctx: any) => {
 
 
         const objFichaAprendiz = new FichaAprendiz(FichaAprendizData);
-        const result = await objFichaAprendiz.GETFichaAprendizById();
+        const result = await objFichaAprendiz.POSTFichaAprendizById();
 
         response.status = 200;
         response.body = {
 
-            success: true,
-            body: result
+            success: result == null ? false : true,
+            body: result == null ? "No se encontro ninguna fichaAprendiz" : result
 
         }
 
