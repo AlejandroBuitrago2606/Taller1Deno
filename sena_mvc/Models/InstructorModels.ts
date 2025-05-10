@@ -26,12 +26,12 @@ export class Instructor{
  }
 
  public async SeleccionarInstructor(): Promise<InstructorData[]>{
-    const {rows:intrucs} = await conexion.execute(`select * from usuario`);
-    return intrucs as InstructorData[];
+    const {rows:instructores} = await conexion.execute("SELECT * FROM instructor");
+    return instructores as InstructorData[];
  }
 
 
- public async insertarInstructor(): Promise<{success:boolean;menssage:string;instructor?: Record<string, unknown>}>{
+ public async insertarInstructor(): Promise<{success:boolean;message:string;instructor?: Record<string, unknown>}>{
 
     try {
 
@@ -41,13 +41,14 @@ export class Instructor{
 
         const{nombre,apellido,email,telefono} = this._objInstructor;
         if (!nombre || !apellido || !email || !telefono) {
-            throw new Error("Faltan Campos requeridos para insertar el usurio");
+            throw new Error("Faltan Campos requeridos para insertar el instructor");
             
         }
 
         await conexion.execute("START TRANSACTION");
 
-        const result = await conexion.execute('insert into instructor(nombre,apellido,email,telefono)values(?,?,?,?)',[
+        const result = await conexion.execute('INSERT INTO instructor(nombre, apellido, email, telefono) VALUES (?, ?, ?, ?)', [
+
             nombre,
             apellido,
             email,
@@ -55,11 +56,11 @@ export class Instructor{
         ]);
 
         if(result && typeof result.affectedRows === "number"  && result.affectedRows > 0){
-            const [instructor] = await conexion.query('select * from instructor WHERE idinstructor = LAST_INSERT_ID',);
+            const [instructor] = await conexion.query('SELECT * FROM instructor WHERE idinstructor = LAST_INSERT_ID()');
 
             await conexion.execute("COMMIT");
 
-            return{success:true, menssage: "Instructor registrado correctamente", instructor:instructor};
+            return{success:true, message: "Instructor registrado correctamente", instructor:instructor};
             
         }else{
             throw new Error("No fue posible registar al Instructor")
@@ -68,9 +69,9 @@ export class Instructor{
 
     } catch (error){
         if (error instanceof z.ZodError){
-            return{success: false, menssage: error.message};
+            return{success: false, message: error.message};
         }else{
-            return{success: false, menssage: "Error al seervidor"}
+            return{success: false, message: "Error al servidor"}
         }
 
     }
@@ -100,7 +101,7 @@ export class Instructor{
                 }
 
                 if(nuevosDatos.apellido){
-                    campos.push("aoellido = ?");
+                    campos.push("apellido = ?");
                     valores.push(nuevosDatos.apellido);
             
                 }
@@ -145,40 +146,51 @@ export class Instructor{
                 }
             }
 
-            public async eliminarInstructor(
-                idinstructor: number ): Promise<{success: boolean; message: string}>{
-                    try {
-                       if(!idinstructor) {
-                        throw new  Error("ID de instructor requerido");
-                       }
-        
-                    await conexion.execute("START TRANSACTION");
-        
-                    const result = await conexion.execute(`DELETE FROM instructor WHERE idInstructor = ?`, [idinstructor]);
-                    await conexion.execute("COMMIT");
-        
-                    if(result && typeof result.affectedRows === "number"  && result.affectedRows > 0) {
-                        return {success: true, message: "Instructor eliminado Correctamente"};
-        
-                    }else{
-                        return{success: false, message: "No se elimino ningun  instructor"}
-                    } 
-        
-                    } catch (error) {
-        
-                        await conexion.execute("ROLLBACK");
-                        return{success: false, message: "Error al eliminar el instructor"}
-                        
-                    }
-                }
-             
-            
+       // models/Instructor.ts
+         public async eliminarInstructor(): Promise<{ success: boolean; message: string }> {
+  try {
+    const idInstructor = this._idInstructor;
+    if (!idInstructor) {
+      throw new Error("No se envió ningún idInstructor");
+    }
+
+    await conexion.execute("START TRANSACTION");
+
+    // ← Aquí quitamos la desestructuración
+    const result: any = await conexion.execute(
+      `DELETE FROM instructor WHERE idinstructor = ?`,
+      [idInstructor]
+    );
+
+    if (result.affectedRows > 0) {
+      console.log("La eliminación fue exitosa");
+      await conexion.execute("COMMIT");
+      return {
+        success: true,
+        message: `Instructor Eliminado Correctamente. IdInstructor=${idInstructor}`
+      };
+    } else {
+      await conexion.execute("ROLLBACK");
+      throw new Error("No fue posible eliminar el instructor.");
+    }
+
+  } catch (error: unknown) {
+    // Siempre rollback si algo falla
+    try { await conexion.execute("ROLLBACK"); } catch (_) {}
+
+    if (error instanceof z.ZodError) {
+      return { success: false, message: error.message };
+    } else if (error instanceof Error) {
+      return { success: false, message: `Error interno del servidor: ${error.message}` };
+    } else {
+      return { success: false, message: "Error interno desconocido" };
+    }
+  }
+}
+
+}
 
 
-
-
-
-        }
 
 
  

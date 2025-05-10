@@ -3,6 +3,7 @@
 
 import { Profesion } from "../Models/ProfesionModels.ts";
 
+
 export const getProfesion= async (ctx:any)=>{
     const{response} = ctx;
 
@@ -58,9 +59,8 @@ export const postProfesion =  async (ctx:any) => {
     const  ProfesionData = {
   
       idprofesion: null,
-      nombre_profesion: body.nombres_programas,
-    
-     
+      nombre_profesion: body.nombre_profesion,
+
     }
   
     //Cumplimos la promesa y el resultl llega bien al constrolador
@@ -72,17 +72,22 @@ export const postProfesion =  async (ctx:any) => {
     body: result,
   };
   
+  console.log("Profesion creada correctamente." + result);
+
   
   
     } catch (error) {
       response.status= 400;
       response.body ={
         success: false,
-        msg: "Error al procesar la solicitud"
+         msg: `Error al procesar la solicitud. \n ${error}`
+
       }
+      console.log(error);
   
   
     }
+
   
   }
 
@@ -91,42 +96,41 @@ export const putProfesion = async(ctx:any) => {
   const {request, response} = ctx;
 
   try {
-    if(!request.hasBody){
+
+     const contentLength = request.headers.get("Content-Length");
+    if(contentLength === "0"){
       response.status = 400;
-      response.body = {success: false, msg:"La solicitud ni tiene cuerpo"}
+      response.body = {success: false, msg:"La solicitud no tiene cuerpo"}
       return;
 
     }
 
     const body = await request.body.json();
-    const {idprofesion, nombre_profesion} = body;
-
-    if(!idprofesion){
-      response.status = 400;
-      response.body ={success:false, msg:"ID profesion requerido"};
-      return;
-    }
-    const objProfesion = new Profesion();
-    const result = await objProfesion.actualizarProfesion(idprofesion,{
-
-      nombre_profesion: nombre_profesion,
-      
-
-    });
-
-    response.status = 200;
-    response.body = { success: true, data: result};
-   
-
-  } catch (error) {
-
-    response.status = 500;
-    response.body = {success: false, msg: "Error al actualizar programa", error};
-
     
+    const ProfesionData = {
+      idprofesion: body.idprofesion,
+      nombre_profesion: body.nombre_profesion
+    };
+
+      const  idProfesion = Number(body.idprofesion);
+
+      const objProfesion = new Profesion(ProfesionData, idProfesion);
+      const result = await objProfesion.actualizarProfesion();
+      response.status = 200;
+      response.body = {
+
+        success: true,
+        body: result
+        
+      };
+}catch(error){
+  response.status = 400;
+  response.body = {
+    success: false,
+    msg: `Error al procesar la solicitud. \n ${error}`
   }
-
-    
+  console.log(error);
+}
 }
 
 // Exporta una función vacía llamada 'deleteUser', para manejar peticiones DELETE (eliminar usuarios)
@@ -158,5 +162,7 @@ try{
 }
     
 }
+
+
 
   

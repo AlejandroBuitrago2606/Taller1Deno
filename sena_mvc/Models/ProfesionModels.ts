@@ -46,19 +46,19 @@ export class Profesion {
            //Hacer la insersion a la basee de datos con la seguridad de cuidar la informacion
    
            await conexion.execute("START TRANSACTION");
-           
-           const result = await conexion.execute(`insert into profesion(nombre_profesion)values(?)`,[
+
+           const result = await conexion.execute(`INSERT INTO profesion(nombre_profesion) VALUES (?)`, [
                nombre_profesion,
            ]);
            //Validar que la consulta se haya hecho exitosamente
    
            if(result && typeof result.affectedRows === "number" && result.affectedRows > 0){
    
-               const [profesion] = await conexion.query(`select * from profesion WHERE idprofesion = LAST_INSERT_ID()`,);
+               const [profesion] = await conexion.query(`SELECT * FROM profesion WHERE idprofesion = LAST_INSERT_ID()`,);
    
                await conexion.execute("COMMIT");
-   
-               return {success:true, menssage:"Prodesion registrada correctamente", profesion:profesion};
+
+               return {success:true, menssage:"Profesion registrada correctamente", profesion:profesion};
            }else{
                throw new Error("No fue posible registar la profesion")
            }
@@ -78,48 +78,66 @@ export class Profesion {
            
         }
 
-        public async actualizarProfesion(
-            idprofesion: number,
-            nuevosDatos: {nombre_profesion?: string; }): Promise<{success: boolean; message: string}>{
-        
-                try {
-                
-                    if (!this._idProfesion) {
-                        throw new Error("ID de programa invalido");
-                    }
-        
-                const campos =[];
-                const valores =[];
-        
-                if(nuevosDatos.nombre_profesion){
-                    campos.push("nombre_nombre_programa = ?");
-                    valores.push(nuevosDatos.nombre_profesion);
-                }
-        
-                
-                valores.push(idprofesion);
-        
-                const consulta = `UPDATE profesion SET ${campos.join(", ")} WHERE idprofesion = ?`;
-        
-                await conexion.execute ("START TRANSACTION");
-                const result = await conexion.execute(consulta, valores);
-        
-                await conexion.execute("COMMIT");
-        
-                if(result && typeof result.affectedRows === "number" && result.affectedRows > 0) {
-                    return{ success: true, message: "Profesion actualizada correctamente"};
-        
-                }else{
-                    return {success: false, message: "No se actulizo ninguna profesion"};
-                }
-                
-        
-                } catch (error) {
-                    await conexion.execute("ROLLBACK");
-                    return {success: false, message: "Error al actualizar el profesion"};
-                    
-                }
-            }
+        public async actualizarProfesion(): Promise<{ success: boolean; message: string; profesion?: Record<string, unknown> }> {
+  try {
+    if (!this._objProfesion) {
+      throw new Error("No se ha proporcionado un objeto de profesion válido.");
+    }
+
+    const { nombre_profesion } = this._objProfesion;
+    if (!nombre_profesion) {
+      throw new Error("Faltan campos requeridos para actualizar la profesion.");
+    }
+
+    if (!this._idProfesion) {
+      throw new Error("No se envió ningún idProfesion");
+    }
+    const idProfesion = this._idProfesion;
+
+    await conexion.execute("START TRANSACTION");
+
+    // —> Paréntesis invertidos aquí: primero nombre_profesion, luego idProfesion
+    const result: any = await conexion.execute(
+  `UPDATE profesion SET nombre_profesion = ? WHERE idprofesion = ?`,
+  [ nombre_profesion, idProfesion ]
+);
+
+    console.log("Resultado del UPDATE:", result);
+
+    if (result.affectedRows > 0) {
+      console.log("La actualización fue exitosa");
+
+    const profesionRows: any = await conexion.query(
+  `SELECT * FROM profesion WHERE idprofesion = ?`,
+  [ idProfesion ]
+);
+      await conexion.execute("COMMIT");
+
+      console.log("Obteniendo la profesion actualizada:", profesionRows);
+      return {
+        success: true,
+        message: "Profesión actualizada correctamente.",
+        profesion: profesionRows
+      };
+    } else {
+      await conexion.execute("ROLLBACK");
+      throw new Error("No fue posible actualizar la profesión (ID no encontrado)");
+    }
+
+  } catch (error: unknown) {
+    try { await conexion.execute("ROLLBACK"); } catch (_) {}
+
+    if (error instanceof z.ZodError) {
+      return { success: false, message: error.message };
+    } else if (error instanceof Error) {
+      return { success: false, message: `Error interno del servidor: ${error.message}` };
+    } else {
+      return { success: false, message: `Error interno desconocido: ${JSON.stringify(error)}` };
+    }
+  }
+}
+
+          
         
              public async eliminarProfesion(
                 idprofesion: number ): Promise<{success: boolean; message: string}>{

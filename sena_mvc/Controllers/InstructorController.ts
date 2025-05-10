@@ -1,26 +1,31 @@
 //deno-lint-ignore-file
 import { Instructor } from "../Models/InstructorModels.ts";
 
-export const getInstructor = async(ctx:any)=>{
-    const {response}= ctx;
+export const getInstructor = async (ctx: any) => {
+  const { response } = ctx;
 
-    try{
-        const objInstructor = new Instructor();
-        const listaImstructores = await objInstructor.SeleccionarInstructor();
+  try {
+    const objInstructor = new Instructor();
+    const listaInstructores = await objInstructor.SeleccionarInstructor();
 
-        response.sattus = 200;
-        response.body ={
-            success:true,
-            data:listaImstructores,
-        }
-    }catch(error){
-        response.status = 400;
-        response.body ={
-            msg:"Error al procesar su solicitud",
-            errors:error
-        }
-    }
-}
+    // ← CORRECCIÓN: status en lugar de sattus
+    response.status = 200;
+    response.body = {
+      success: true,
+      data: listaInstructores
+    };
+
+    console.log("Instructores obtenidos correctamente:", listaInstructores);
+  } catch (error) {
+    response.status = 400;
+    response.body = {
+      msg: "Error al procesar su solicitud",
+      // imprime el mensaje real de error para ayudar al debug
+      errors: error instanceof Error ? error.message : String(error)
+    };
+    console.error("Error en getInstructor:", error);
+  }
+};
 
 export const postInstructor = async (ctx:any) =>{
      
@@ -121,33 +126,45 @@ export const putInstructor = async(ctx:any) => {
   }
 
   // Exporta una función vacía llamada 'deleteUser', para manejar peticiones DELETE (eliminar usuarios)
-export const deleteInstructor =  async(ctx:any) => {
-    const{request, response} =ctx;
-  try{
-    if(!request.hasBody){
-      response.status = 400;
-      response.body ={success: false, msg:"La solicitud no tiene cuerpo"};
-      return;
-    }
-    const body = await request.body.json();
-    const{ idinstructor } = body;
-  
-    if(!idinstructor){
-      response.status = 400;
-      response.body= {success: false, msg: "ID de usuario requerido"};
-      return;
-    }
-  
-    const objUser = new Instructor();
-    const result = await objUser.eliminarInstructor(idinstructor);
-  
-    response.status = 200;
-    response.body= {success: true, msg: "Instructor eliminado correctamente", data: result};
-  } catch(error){
-    response.status = 500;
-    response.body ={success: false, msg: "Error al eliminar el Instructor", error};
-  }
-      
-  }
-  
+export const deleteInstructor = async (ctx: any) => {
 
+    const { response, request } = ctx;
+
+    try {
+
+        const contentLength = request.headers.get("Content-Length");
+        if (contentLength === "0") {
+            response.status = 400;
+            response.body = { success: false, msg: "El cuerpo de la solicitud esta vacio." };
+            return;
+        }
+
+        const body = await request.body.json();
+
+        const idInstructor = Number(body.idinstructor);
+
+        const objInstructor = new Instructor(null, idInstructor);
+        const result = await objInstructor.eliminarInstructor();
+        response.status = 200;
+        response.body = {
+
+            success: true,
+            body: result
+
+        }
+
+
+    } catch (error) {
+        response.status = 400;
+        response.body = {
+
+            success: false,
+            msg: `Error al procesar la solicitud. \n ${error}`
+
+        }
+        console.log(error);
+
+
+    }
+
+}

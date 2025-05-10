@@ -9,12 +9,4 @@ routerProfesion.post("/profesiones",postProfesion);
 routerProfesion.put("/profesiones",putProfesion);
 routerProfesion.delete("/profesiones",deleteProfesion);
 
-
-
-
-
-
-
-
-
 export{routerProfesion};

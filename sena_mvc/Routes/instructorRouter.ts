@@ -8,14 +8,7 @@ const routerInstructor = new Router();
 routerInstructor.get("/instructores",getInstructor);
 routerInstructor.post("/instructores",postInstructor);
 routerInstructor.put("/instructores",putInstructor);
-routerInstructor.put("/instructores",deleteInstructor);
-
-
-
-
-
-
-
+routerInstructor.delete("/instructores",deleteInstructor);
 
 
 export{routerInstructor};

@@ -5,7 +5,10 @@ POST http://localhost:8000/instructores
 Content-Type: application/json
 
 {
-    
+      "nombres": "Osman Antonio",
+      "apellidos": "Aranguren Gonzalez",
+      "email": "osman.antonio@soy.sena.edu.co",
+      "telefono": "3456576879"
 }
 
 ###
@@ -13,7 +16,11 @@ PUT http://localhost:8000/instructores
 Content-Type: application/json
 
 {
-    
+    "idinstructor": 1,
+      "nombres": "Gustavo Andres",
+      "apellidos": "Aranguren Gonzalez",
+      "email": "gustavo.andres@soy.sena.edu.co",
+      "telefono": "3456576879"
 }
 
 ###
@@ -21,8 +28,11 @@ DELETE http://localhost:8000/instructores
 Content-Type: application/json
 
 {
-   
+     "idinstructor": 9
+
 }
+
+
 
 
 
@@ -45,6 +55,9 @@ POST http://localhost:8000/profesiones
 Content-Type: application/json
 
 {
+
+
+      "nombre_profesion": "Administrador de Base de Datos"
     
 }
 
@@ -54,6 +67,9 @@ Content-Type: application/json
 
 {
     
+    "idprofesion": 7,
+    "nombre_profesion": "Administrador"
+
 }
 
 ###
@@ -61,8 +77,10 @@ DELETE http://localhost:8000/profesiones
 Content-Type: application/json
 
 {
-   
+    "idprofesion": 7
 }
+
+
 
 
 
@@ -78,7 +96,10 @@ POST http://localhost:8000/instructoresprofesiones
 Content-Type: application/json
 
 {
-    
+   
+    "instructor_idinstructor": 3,
+    "profesion_idprofesion": 4
+
 }
 ###
 PUT http://localhost:8000/instructoresprofesiones
@@ -86,14 +107,20 @@ Content-Type: application/json
 
 
 {
+      "instructor_idinstructor": 3,
+      "profesion_idprofesion": 4
     
 }
 ###
+
 DELETE http://localhost:8000/instructoresprofesiones
 Content-Type: application/json
+
 {
-    
+  "instructor_idinstructor": 3,
+  "profesion_idprofesion": 4
 }
+
 
 
 
@@ -112,10 +139,10 @@ POST http://localhost:8000/aprendiz
 Content-Type: application/json
 
 {
-    "nombre": "Yuber Alejandro",
-    "apellido": "Buitrago Gonzalez",
-    "email": "yuber.buitrago@gmail.com",
-    "telefono": "3166301513"    
+    "nombre": "Carlos Alberto",
+    "apellido": "Perez Arbelaez",
+    "email": "carlos.alberto@gmail.com",
+    "telefono": "3465676789"
 }
 
 ###
@@ -135,7 +162,7 @@ DELETE http://localhost:8000/aprendiz
 Content-Type: application/json
 
 {
-    "idaprendiz": 5
+    "idaprendiz": 3
 }
 
 ###

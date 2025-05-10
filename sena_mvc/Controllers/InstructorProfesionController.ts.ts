@@ -4,6 +4,7 @@ import { InstructorProfesion } from '../Models/InstructorProfesionModels.ts';
 
 
 
+
 export const getInstructorProfesion = async(ctx: any) => {
     const {response} = ctx;
 
@@ -72,9 +73,9 @@ response.body = {
 
 export const putInstructorProfesion = async(ctx: any) => {
     const {response, request} = ctx;
-    
     try {
-        if(!request.hasBody){
+        const contentLength = request.headers.get("content-length");
+        if(contentLength === "0"){
             response.status = 400;
             response.body = {
                 success: false,
@@ -82,38 +83,33 @@ export const putInstructorProfesion = async(ctx: any) => {
             };
             
             return;
-        }       
-    } catch (error) {
-        response.status = 500;          
+        }
+        const body = await request.body.json();
+       
+        const InstructorProfesionData = {
+            instructor_idinstructor: body.instructor_idinstructor,
+            profesion_idprofesion: body.profesion_idprofesion
+
+        };
+        const objInstructorProfesion = new InstructorProfesion(InstructorProfesionData);
+        const result = await objInstructorProfesion.actualizarInstructorProfesion();
+        response.status = 200;
+        response.body = {
+            success: true,
+            data: result
+        };
+        }catch (error) {
+        response.status = 400;
         response.body = {
             success: false,
             msg: "Error al actualizar el instructor y profesion",
             
         }
-    }
-    const body = await request.body.json();
-    const {instructor_idinstructor, profesion_idprofesion} = body;
-    if(!instructor_idinstructor || !profesion_idprofesion){
-        response.status = 400;
-        response.body = {
-            success: false,
-            message: "Id del instructor o profesion no proporcionado"
-        };
-
+        console.log(error);
         
-        return;
     }
-
-    const objInstructorProfesion = new InstructorProfesion({ instructor_idinstructor, profesion_idprofesion });
-    const result = await objInstructorProfesion.actualizarInstructorProfesion();
     
-    response.status = 200;
-    response.body = {
-        success: true,
-        data: result
-    };
 }
-
 //Metodo para eliminar el instructor y profesion
 export const deleteInstructorProfesion = async(ctx: any) => {
     const {response, request} = ctx;
